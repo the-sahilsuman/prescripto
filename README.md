@@ -59,8 +59,7 @@ It provides a seamless experience for booking, managing, and tracking appointmen
 - React Router  
 
 ### 🔧 Backend
-- Node.js  
-- Express.js  
+- FASTAPI  
 - MongoDB (Mongoose)  
 - JWT Authentication  
 
@@ -75,7 +74,7 @@ It provides a seamless experience for booking, managing, and tracking appointmen
 ```
 Client (React)
       ↓
-REST API (Node + Express)
+REST API (FASTAPI)
       ↓
 MongoDB Database
 ```
@@ -173,15 +172,14 @@ Password: 123456
 
 ### 1️⃣ Clone Repository
 ```bash
-git clone https://github.com/raj-balram/prescripto.git
+git clone https://github.com/the-sahilsuman/prescripto.git
 cd prescripto
 ```
 
 ### 2️⃣ Backend Setup
 ```bash
 cd backend
-npm install
-npm start
+python server.py
 ```
 
 ### 3️⃣ Frontend Setup
@@ -234,7 +232,7 @@ Click the "Fork" button at the top right of this repo.
 
 2️⃣ **Clone Your Fork**
 ```bash
-git clone https://github.com/your-username/prescripto.git
+git clone https://github.com/the-sahilsuman/prescripto.git
 cd prescripto
 ```
 
