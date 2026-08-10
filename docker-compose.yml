@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    container_name: backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - "4000:4000"
+    networks:
+      - prescripto
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    env_file:
+      - ./frontend/.env
+    ports:
+      - "5173:5173"
+    networks:
+      - prescripto
+
+  admin:
+    build: ./admin
+    container_name: admin
+    env_file:
+      - ./admin/.env
+    ports:
+      - "5174:5174"
+    networks:
+      - prescripto
+
+networks:
+  prescripto:

@@ -1,0 +1,46 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+ENV/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.sw?
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Uploads (temp files from multipart)
+uploads/
+tmp/
