@@ -11,8 +11,8 @@ const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword]= useState('')
 
-  const {setAToken, backendUrl} = useContext(AdminContext)
-  const {setDToken}= useContext(DoctorContext)
+  const {setAToken, setARefreshToken, backendUrl} = useContext(AdminContext)
+  const {setDToken, setDRefreshToken}= useContext(DoctorContext)
 
   const onSubmitHandler= async (event)=>{
     event.preventDefault()
@@ -23,7 +23,9 @@ const Login = () => {
         const {data}= await axios.post(backendUrl + '/api/admin/login', {email,password})
         if(data.success){
           localStorage.setItem('aToken', data.token)
+          localStorage.setItem('aRefreshToken', data.refreshToken)
           setAToken(data.token)
+          setARefreshToken(data.refreshToken)
           toast.success("Login Successful")
         } else{
         toast.error(data.message)
@@ -34,7 +36,9 @@ const Login = () => {
 
         if(data.success){
           localStorage.setItem('dToken', data.token)
+          localStorage.setItem('dRefreshToken', data.refreshToken)
           setDToken(data.token)
+          setDRefreshToken(data.refreshToken)
           toast.success("Login Successful")
           console.log(data.token);
           

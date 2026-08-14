@@ -7,8 +7,8 @@ import cloudinary.uploader
 from bson import ObjectId
 from email_validator import validate_email, EmailNotValidError
 from fastapi import UploadFile
-from jose import jwt
 from passlib.context import CryptContext
+from middlewares.auth import create_access_token, create_refresh_token
 
 from config.mongodb import get_db
 from utils import serialize
@@ -67,13 +67,19 @@ async def add_doctor(
 # ── Admin Login ───────────────────────────────────────────────────────────────
 
 async def login_admin(email: str, password: str):
-    admin_email = os.getenv("ADMIN_EMAIL", "")
+    admin_email    = os.getenv("ADMIN_EMAIL", "")
     admin_password = os.getenv("ADMIN_PASSWORD", "")
-    jwt_secret = os.getenv("JWT_SECRET", "")
 
     if email == admin_email and password == admin_password:
-        token = jwt.encode({"sub": email + password}, jwt_secret, algorithm="HS256")
-        return {"success": True, "token": token}
+        sentinel = email + password          # existing sentinel value kept as sub
+        access_token  = create_access_token(sub=sentinel,  role="admin")
+        refresh_token = create_refresh_token(sub=sentinel, role="admin")
+
+        # Persist refresh token so it can be validated and rotated
+        db = get_db()
+        await db.refresh_tokens.insert_one({"token": refresh_token, "role": "admin", "sub": sentinel})
+
+        return {"success": True, "token": access_token, "refreshToken": refresh_token}
 
     return {"success": False, "message": "Invalid Credentials"}
 

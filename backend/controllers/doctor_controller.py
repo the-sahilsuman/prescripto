@@ -1,8 +1,8 @@
 import os
 
 from bson import ObjectId
-from jose import jwt
 from passlib.context import CryptContext
+from middlewares.auth import create_access_token, create_refresh_token
 
 from config.mongodb import get_db
 from utils import serialize
@@ -38,15 +38,19 @@ async def doctor_list():
 
 async def login_doctor(email: str, password: str):
     db = get_db()
-    jwt_secret = os.getenv("JWT_SECRET", "")
 
     doctor = await db.doctors.find_one({"email": email})
     if not doctor:
         return {"success": False, "message": "Invalid Credentials"}
 
     if pwd_context.verify(password, doctor["password"]):
-        token = jwt.encode({"id": str(doctor["_id"])}, jwt_secret, algorithm="HS256")
-        return {"success": True, "token": token}
+        doc_id        = str(doctor["_id"])
+        access_token  = create_access_token(sub=doc_id,  role="doctor")
+        refresh_token = create_refresh_token(sub=doc_id, role="doctor")
+
+        await db.refresh_tokens.insert_one({"token": refresh_token, "role": "doctor", "sub": doc_id})
+
+        return {"success": True, "token": access_token, "refreshToken": refresh_token}
 
     return {"success": False, "message": "Invalid Credentials"}
 

@@ -7,8 +7,8 @@ import cloudinary.uploader
 from bson import ObjectId
 from email_validator import validate_email, EmailNotValidError
 from fastapi import UploadFile
-from jose import jwt
 from passlib.context import CryptContext
+from middlewares.auth import create_access_token, create_refresh_token
 
 from config.mongodb import get_db
 from utils import serialize
@@ -36,8 +36,11 @@ async def register_user(name: str, email: str, password: str):
     result = await db.users.insert_one({"name": name, "email": email, "password": hashed})
     user_id = str(result.inserted_id)
 
-    token = jwt.encode({"id": user_id}, os.getenv("JWT_SECRET", ""), algorithm="HS256")
-    return {"success": True, "token": token}
+    access_token  = create_access_token(sub=user_id, role="user")
+    refresh_token = create_refresh_token(sub=user_id, role="user")
+    await db.refresh_tokens.insert_one({"token": refresh_token, "role": "user", "sub": user_id})
+
+    return {"success": True, "token": access_token, "refreshToken": refresh_token}
 
 
 # ── Login User ────────────────────────────────────────────────────────────────
@@ -50,10 +53,11 @@ async def login_user(email: str, password: str):
         return {"success": False, "message": "User doesn't Exist!"}
 
     if pwd_context.verify(password, user["password"]):
-        token = jwt.encode(
-            {"id": str(user["_id"])}, os.getenv("JWT_SECRET", ""), algorithm="HS256"
-        )
-        return {"success": True, "token": token}
+        user_id       = str(user["_id"])
+        access_token  = create_access_token(sub=user_id, role="user")
+        refresh_token = create_refresh_token(sub=user_id, role="user")
+        await db.refresh_tokens.insert_one({"token": refresh_token, "role": "user", "sub": user_id})
+        return {"success": True, "token": access_token, "refreshToken": refresh_token}
 
     return {"success": False, "message": "Invalid Credentials"}
 

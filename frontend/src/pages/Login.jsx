@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
 
-  const {backendUrl, token, setToken}= useContext(AppContext)
+  const {backendUrl, token, setToken, setRefreshToken}= useContext(AppContext)
 
   const navigate= useNavigate()
 
@@ -26,7 +26,9 @@ const Login = () => {
         const {data}= await axios.post(backendUrl + '/api/user/register', {name, email, password})
         if(data.success){
           localStorage.setItem('token', data.token)
+          localStorage.setItem('refreshToken', data.refreshToken)
           setToken(data.token)
+          setRefreshToken(data.refreshToken)
         } else{
           toast.error(data.message)
         }
@@ -36,7 +38,9 @@ const Login = () => {
         const {data}= await axios.post(backendUrl + '/api/user/login', {email,password})
         if(data.success){
           localStorage.setItem('token', data.token)
+          localStorage.setItem('refreshToken', data.refreshToken)
           setToken(data.token)
+          setRefreshToken(data.refreshToken)
         } else{
           toast.error(data.message)
         }

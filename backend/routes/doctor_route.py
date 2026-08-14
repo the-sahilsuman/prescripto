@@ -1,4 +1,5 @@
 import json
+
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from typing import Any
@@ -13,12 +14,14 @@ from controllers.doctor_controller import (
     doctor_profile,
     update_doctor_profile,
 )
-from middlewares.auth import auth_doctor
+from middlewares.auth import CurrentUser, require_roles
 
-router = APIRouter(prefix="/api/doctor")
+router = APIRouter(prefix="/api/doctor", tags=["Doctors"])
+
+_doctor = require_roles(["doctor"])
 
 
-# ── Request bodies (JSON) ─────────────────────────────────────────────────────
+# ── Request bodies ────────────────────────────────────────────────────────────
 
 class LoginBody(BaseModel):
     email: str
@@ -46,41 +49,40 @@ async def route_login_doctor(body: LoginBody):
 
 
 @router.get("/appointments")
-async def route_appointments_doctor(doc_id: str = Depends(auth_doctor)):
-    return await appointments_doctor(doc_id)
+async def route_appointments_doctor(current_user: CurrentUser = Depends(_doctor)):
+    return await appointments_doctor(current_user.sub)
 
 
 @router.post("/cancel-appointment")
 async def route_cancel_appointment(
     body: AppointmentIdBody,
-    doc_id: str = Depends(auth_doctor),
+    current_user: CurrentUser = Depends(_doctor),
 ):
-    return await appointment_cancel(doc_id, body.appointmentId)
+    return await appointment_cancel(current_user.sub, body.appointmentId)
 
 
 @router.post("/complete-appointment")
 async def route_complete_appointment(
     body: AppointmentIdBody,
-    doc_id: str = Depends(auth_doctor),
+    current_user: CurrentUser = Depends(_doctor),
 ):
-    return await appointment_completed(doc_id, body.appointmentId)
+    return await appointment_completed(current_user.sub, body.appointmentId)
 
 
 @router.get("/dashboard")
-async def route_doctor_dashboard(doc_id: str = Depends(auth_doctor)):
-    return await doctor_dashboard(doc_id)
+async def route_doctor_dashboard(current_user: CurrentUser = Depends(_doctor)):
+    return await doctor_dashboard(current_user.sub)
 
 
 @router.get("/profile")
-async def route_doctor_profile(doc_id: str = Depends(auth_doctor)):
-    return await doctor_profile(doc_id)
+async def route_doctor_profile(current_user: CurrentUser = Depends(_doctor)):
+    return await doctor_profile(current_user.sub)
 
 
 @router.post("/update-profile")
 async def route_update_doctor_profile(
     body: UpdateProfileBody,
-    doc_id: str = Depends(auth_doctor),
+    current_user: CurrentUser = Depends(_doctor),
 ):
-    # address may come as a string or dict
     address = body.address if isinstance(body.address, dict) else json.loads(body.address)
-    return await update_doctor_profile(doc_id, body.fees, address, body.available)
+    return await update_doctor_profile(current_user.sub, body.fees, address, body.available)

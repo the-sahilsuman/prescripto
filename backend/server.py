@@ -12,6 +12,7 @@ from config.cloudinary import connect_cloudinary
 from routes.admin_route import router as admin_router
 from routes.doctor_route import router as doctor_router
 from routes.user_route import router as user_router
+from routes.auth_route import router as auth_router
 
 
 @asynccontextmanager
@@ -48,9 +49,10 @@ app.add_middleware(
 )
 
 # Routers
+app.include_router(auth_router)
 app.include_router(admin_router)
-app.include_router(doctor_router)
-app.include_router(user_router)
+app.include_router(doctor_router, tags=["Doctors"])
+app.include_router(user_router, tags=["Users"])
 
 
 @app.get("/")

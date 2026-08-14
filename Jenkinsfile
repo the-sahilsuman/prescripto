@@ -16,7 +16,7 @@ pipeline {
                     git pull origin dev
                 else
                     echo "Cloning repo..."
-                    git clone -b dev https://github.com/the-sahilsuman/prescripto.git
+                    git clone -b main https://github.com/the-sahilsuman/prescripto.git
                 fi
                 '''
             }

@@ -7,13 +7,15 @@ const Navbar = () => {
 
     const navigate= useNavigate();
 
-    const {token, setToken, userData}= useContext(AppContext)
+  const {token, setToken, setRefreshToken, userData}= useContext(AppContext)
     
     const [showMenu, setShowMenu] = useState(false)
 
     const logout =()=>{
         setToken(false)
+        setRefreshToken(false)
         localStorage.removeItem('token')
+        localStorage.removeItem('refreshToken')
     }
 
     return (
