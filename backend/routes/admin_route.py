@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Form, UploadFile, File
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 from controllers.admin_controller import (
     add_doctor,
@@ -20,7 +20,7 @@ _admin = require_roles(["admin"])
 # ── Request bodies ────────────────────────────────────────────────────────────
 
 class LoginBody(BaseModel):
-    email: str
+    email: EmailStr
     password: str
 
 class DocIdBody(BaseModel):

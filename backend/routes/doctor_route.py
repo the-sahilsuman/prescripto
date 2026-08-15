@@ -1,7 +1,7 @@
 import json
 
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Any
 
 from controllers.doctor_controller import (
@@ -24,7 +24,7 @@ _doctor = require_roles(["doctor"])
 # ── Request bodies ────────────────────────────────────────────────────────────
 
 class LoginBody(BaseModel):
-    email: str
+    email: EmailStr
     password: str
 
 class AppointmentIdBody(BaseModel):

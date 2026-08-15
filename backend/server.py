@@ -55,7 +55,7 @@ app.include_router(doctor_router, tags=["Doctors"])
 app.include_router(user_router, tags=["Users"])
 
 
-@app.get("/")
+@app.get("/",tag="Root")
 async def root():
     return "API WORKING FINE"
 
