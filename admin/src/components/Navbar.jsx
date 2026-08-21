@@ -1,4 +1,5 @@
 import React, { useContext } from 'react'
+import axios from 'axios'
 import { assets } from '../assets/assets.js'
 import { AdminContext } from '../context/AdminContext'
 import { useNavigate } from 'react-router-dom'
@@ -6,21 +7,42 @@ import {DoctorContext} from '../context/DoctorContext'
 
 const Navbar = () => {
 
-  const {aToken, setAToken, setARefreshToken} = useContext(AdminContext)
-  const {dToken, setDToken, setDRefreshToken} = useContext(DoctorContext)
+  const {aToken, aRefreshToken, setAToken, setARefreshToken, backendUrl} = useContext(AdminContext)
+  const {dToken, dRefreshToken, setDToken, setDRefreshToken, backendUrl: doctorBackendUrl} = useContext(DoctorContext)
 
   const navigate= useNavigate()
 
-  const logout= ()=>{
+  const logout = async ()=>{
     navigate('/')
-    aToken && setAToken('')
-    aToken && setARefreshToken('')
-    aToken && localStorage.removeItem('aToken')
-    aToken && localStorage.removeItem('aRefreshToken')
-    dToken && setDToken('')
-    dToken && setDRefreshToken('')
-    dToken && localStorage.removeItem('dToken')
-    dToken && localStorage.removeItem('dRefreshToken')
+
+    const currentRefreshToken = aRefreshToken || dRefreshToken
+    const apiUrl = backendUrl || doctorBackendUrl
+
+    // Revoke the refresh token on the server BEFORE removing it locally.
+    if (currentRefreshToken && apiUrl) {
+      try {
+        await axios.post(`${apiUrl}/api/auth/logout`, {
+          refreshToken: currentRefreshToken,
+        })
+      } catch (error) {
+        console.error('Logout token revocation failed:', error)
+      }
+    }
+
+    // Always clear the browser session.
+    if (aToken) {
+      setAToken('')
+      setARefreshToken('')
+      localStorage.removeItem('aToken')
+      localStorage.removeItem('aRefreshToken')
+    }
+
+    if (dToken) {
+      setDToken('')
+      setDRefreshToken('')
+      localStorage.removeItem('dToken')
+      localStorage.removeItem('dRefreshToken')
+    }
   }
 
   return (

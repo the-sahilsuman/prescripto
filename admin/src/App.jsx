@@ -14,6 +14,7 @@ import DoctorDashboard from './pages/Doctors/DoctorDashboard'
 import { DoctorContext } from './context/DoctorContext';
 import DoctorProfile from './pages/Doctors/DoctorProfile';
 import DoctorAppointments from './pages/Doctors/DoctorAppointments';
+import ForgotPassword from './pages/ForgotPassword';
 
 const App = () => {
 
@@ -44,7 +45,10 @@ const App = () => {
     </div>
   ): (
     <>
-      <Login />
+      <Routes>
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path='*' element={<Login />} />
+      </Routes>
       <ToastContainer />
     </>
   )

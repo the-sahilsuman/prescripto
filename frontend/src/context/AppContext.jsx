@@ -17,6 +17,7 @@ const AppContextProvider = (props) => {
 
   // ── Silent 5-minute token refresh ─────────────────────────────────────────
   useTokenRefresh({
+    token,
     refreshToken,
     backendUrl,
     tokenKey:        'token',

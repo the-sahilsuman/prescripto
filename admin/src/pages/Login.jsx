@@ -4,12 +4,14 @@ import { AdminContext } from '../context/AdminContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { DoctorContext } from '../context/DoctorContext'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
 
   const [state, setState]= useState('Admin')
   const [email, setEmail] = useState('')
   const [password, setPassword]= useState('')
+  const navigate = useNavigate()
 
   const {setAToken, setARefreshToken, backendUrl} = useContext(AdminContext)
   const {setDToken, setDRefreshToken}= useContext(DoctorContext)
@@ -65,6 +67,7 @@ const Login = () => {
           <input onChange={(e)=> setPassword(e.target.value)} value={password} className='border border-[#DADADA] rounded w-full p-2 mt-1' type="password" required />
         </div>
         <button className='bg-primary text-white w-full rounded-md py-2 text-base '>Login</button>
+        {state === 'Doctor' && <p onClick={()=>navigate('/forgot-password')} className='text-primary underline cursor-pointer'>Forgot password?</p>}
         {
           state==='Admin'?
           <p>Doctor login? <span className='text-primary underline cursor-pointer' onClick={()=> setState('Doctor')}>Click here</span></p>:

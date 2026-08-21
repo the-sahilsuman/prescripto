@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react'
+import axios from 'axios'
 import {assets} from '../assets/assets'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { AppContext } from '../context/AppContext';
@@ -7,11 +8,25 @@ const Navbar = () => {
 
     const navigate= useNavigate();
 
-  const {token, setToken, setRefreshToken, userData}= useContext(AppContext)
+  const {token, refreshToken, setToken, setRefreshToken, backendUrl, userData}= useContext(AppContext)
     
     const [showMenu, setShowMenu] = useState(false)
 
-    const logout =()=>{
+    const logout = async ()=>{
+        const currentRefreshToken = refreshToken
+
+        // Revoke the refresh token on the server BEFORE removing it locally.
+        if (currentRefreshToken) {
+            try {
+                await axios.post(`${backendUrl}/api/auth/logout`, {
+                    refreshToken: currentRefreshToken,
+                })
+            } catch (error) {
+                console.error('Logout token revocation failed:', error)
+            }
+        }
+
+        // Always clear the browser session, even if the API request fails.
         setToken(false)
         setRefreshToken(false)
         localStorage.removeItem('token')

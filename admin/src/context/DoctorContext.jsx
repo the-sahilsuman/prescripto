@@ -18,6 +18,7 @@ const DoctorContextProvider = (props) => {
 
   // ── Silent 5-minute token refresh ─────────────────────────────────────────
   useTokenRefresh({
+    token:           dToken,
     refreshToken:    dRefreshToken,
     backendUrl,
     tokenKey:        'dToken',

@@ -18,6 +18,7 @@ const AdminContextProvider = (props) => {
 
   // ── Silent 5-minute token refresh ─────────────────────────────────────────
   useTokenRefresh({
+    token:           aToken,
     refreshToken:    aRefreshToken,
     backendUrl,
     tokenKey:        'aToken',
