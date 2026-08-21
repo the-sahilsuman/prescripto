@@ -297,9 +297,9 @@ If you find a bug or want to suggest a feature:
 
 ## 👨‍💻 Author
 
-**Balram Raj**  
+**SAHIL SUMAN**  
 
-- GitHub: https://github.com/raj-balram  
+- GitHub: https://github.com/the-sahilsuman 
 
 ---
 
